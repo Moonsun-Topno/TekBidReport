@@ -1,10 +1,16 @@
 import Pagination from '@/Components/Pagination';
 import Authenticated from '@/Layouts/AuthenticatedLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function Index({auth, tasks}) {
 
+    const startTask = (task) => {
+        if (!window.confirm("Are you ready to Start the Task?")) {
+          return;
+        }
+        router.put(route("task.start", task.id));
+      };
 
     return (
         <Authenticated
@@ -32,7 +38,7 @@ export default function Index({auth, tasks}) {
                             <div>
                             
                             </div>
-                            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <table className="w-full text-m text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead  className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                                     <tr className="text-nowrap">
                                         <th className="px-3 py-3">Date</th>
@@ -43,6 +49,7 @@ export default function Index({auth, tasks}) {
                                         <th className="px-3 py-3">Customer</th>
                                         <th className="px-3 py-3">Ref. No.</th>
                                         <th className="px-3 py-3">Quote Recieved</th>
+                                        <th className="px-3 py-3">Quote Started</th>
                                         <th className="px-3 py-3">Quote Submitted</th>
                                         <th className="px-3 py-3">Time Occupied</th>
                                         <th className="px-3 py-3">Comments</th>
@@ -60,22 +67,33 @@ export default function Index({auth, tasks}) {
                                         <td className="px-3 py-2">{task.region}</td>
                                         <td className="px-3 py-2">{task.customer}</td>
                                         <td className="px-3 py-2">{task.reference_number}</td>
-                                        <td className="px-3 py-2">{task.task_started}</td>
+                                        <td className="px-3 py-2">{task.created_at}</td>
+                                        <td className="px-3 py-2">
+                                            {task.task_started ? (task.task_started) : (
+                                                <button
+                                                onClick={(e) => startTask(task)}
+                                                className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
+                                              >
+                                                Start
+                                              </button>
+                                            )}
+                                        </td>
                                         <td className="px-3 py-2">{task.task_completed}</td>
                                         <td className="px-3 py-2">{task.time_occupied}</td>
                                         <td className="px-3 py-2">{task.comments ? (task.comments) : ("") }</td>
-                                        <td className="px-3 py-2 ">
-                                            {task.task_completed ? ("submitted") : (
-                                                <div>
+                                        <td className="px-3 py-2">
+                                        {!task.task_started ? ("") : !task.task_completed ? (<div>
                                                 <Link
                                                 href={route("task.edit", task.id)}
                                                 className="font-medium py-1 px-3 rounded shadow bg-blue-500 text-white dark:text-blue-500 hover:underline mx-1"
                                               >
                                                 Submit
                                               </Link>
-                                            </div>
+                                            </div>)  : ( ""
+                                                
                                                 
                                             )}
+
                                         </td>
                                     </tr> 
                                 

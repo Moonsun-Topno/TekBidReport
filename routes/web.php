@@ -15,6 +15,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::resource('task', TaskController::class);
     Route::get('/today', [TaskController::class, 'today'])->name('task.today');
+    Route::put('/task/{task}/start', [TaskController::class, 'start'])->name('task.start');
 });
 
 Route::middleware('auth')->group(function () {

@@ -9,6 +9,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -66,7 +67,6 @@ class TaskController extends Controller
         $data = $request->validated(); 
         $data['owner_id'] = Auth::id();
         $data['date'] = now()->toDateString();
-        $data['task_started'] = now();
         Task::create($data);
             
 
@@ -108,15 +108,23 @@ class TaskController extends Controller
         $completedAt = Carbon::parse($data['task_completed']);
 
         //getting the difference
-        $timeOccupied = $completedAt->diff($startedAt);
+        // Calculate the difference in total seconds
+    $totalSeconds = $startedAt->diffInSeconds($completedAt);
+
+    // Calculate days, hours, minutes, and seconds
+    $days = intdiv($totalSeconds, 86400); // 86400 seconds in a day
+    $hours = intdiv($totalSeconds % 86400, 3600); // 3600 seconds in an hour
+    $minutes = intdiv(($totalSeconds % 86400) % 3600, 60); // 60 seconds in a minute
+    $seconds = ($totalSeconds % 86400) % 3600 % 60;
+
 
         //formatting in days:HH:MM:SS
         $formattedTimeOccupied = sprintf(
             '%d:%02d:%02d:%02d',
-            $timeOccupied->days,
-            $timeOccupied->h,
-            $timeOccupied->i,
-            $timeOccupied->s
+        $days,
+        $hours,
+        $minutes,
+        $seconds
         );
 
         $data['time_occupied'] = $formattedTimeOccupied;
@@ -133,5 +141,14 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         //
+    }
+
+    public function start(Request $request, Task $task)
+    {
+        $task->task_started = now();
+        $task->save();
+
+        return to_route('task.today');
+
     }
 }
