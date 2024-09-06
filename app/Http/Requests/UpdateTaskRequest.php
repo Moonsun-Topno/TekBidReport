@@ -22,7 +22,7 @@ class UpdateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "comments" => ['required','string']
+            "comments" => ['nullable', 'string']
             //
         ];
     }

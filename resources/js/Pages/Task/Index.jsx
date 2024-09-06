@@ -109,7 +109,7 @@ export default function Index({auth, tasks}) {
                                               >
                                                 Submit
                                               </Link>
-                                            </div>)  : ( ""
+                                            </div>)  : ( "Submitted"
                                                 
                                                 
                                             )}
