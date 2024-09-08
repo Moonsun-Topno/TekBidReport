@@ -37,8 +37,9 @@ class TaskResource extends JsonResource
         'task_completed' => $this -> task_completed ? (new Carbon($this->task_completed))->format
         ('h:i A') : $this -> task_completed,
         'time_occupied'=> $this -> time_occupied, //$this->time_occupied ? (new Carbon($this->task_occupied))->format
-        //('h:i') :     
+        //('h:i') :
         'comments'=> $this->comments,
+        'taskowner' => new UserResource($this->whenLoaded('taskOwner')),
         ];
     }
 }

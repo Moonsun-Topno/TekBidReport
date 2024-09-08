@@ -21,7 +21,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $query = Task::with('owner');
+        $query = Task::with(['owner','taskOwner']);
         
         //paginate the results
         $tasks = $query
@@ -87,6 +87,10 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
+        if (Auth::id() !== $task->task_owner) {
+            // If not the owner, return an unauthorized response or handle the error as needed
+            abort(403, 'Only Task Owner can close their tasks');
+        }
         return inertia('Task/Edit',[
             'task' => new TaskResource($task),
         ]);
@@ -98,6 +102,11 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
+        if (Auth::id() !== $task->task_owner) {
+            // If not the owner, return an unauthorized response or handle the error as needed
+            abort(403, 'Only Task Owner can close their tasks');
+        }
+        
         $data = $request->validated();
         $data['task_completed'] = now();
         
@@ -146,6 +155,7 @@ class TaskController extends Controller
     public function start(Request $request, Task $task)
     {
         $task->task_started = now();
+        $task->task_owner = Auth::id();
         $task->save();
 
         return to_route('task.today');

@@ -12,6 +12,7 @@ class Task extends Model
     protected $fillable = [
         'date',
         'owner_id',
+        'task_owner',
         'type',
         'case_type',
         'region',
@@ -29,8 +30,13 @@ class Task extends Model
         'task_completed' => 'datetime',
     ];
 
-    public function owner()
+    public function owner() // this is for who added the task
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
+
+    public function taskOwner() //this defines who started the task and is responsible for it
+{
+    return $this->belongsTo(User::class, 'task_owner');
+}
 }

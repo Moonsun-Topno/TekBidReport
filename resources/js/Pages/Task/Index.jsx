@@ -44,6 +44,7 @@ export default function Index({auth, tasks}) {
                             <thead  className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                                     <tr className="text-nowrap">
                                         <th className="px-3 py-3">Date</th>
+                                        <th className="px-3 py-3">Bid Added by</th>
                                         <th className="px-3 py-3">Bid Owner</th>
                                         <th className="px-3 py-3">Type</th>
                                         <th className="px-3 py-3">Case Type</th>
@@ -82,6 +83,7 @@ export default function Index({auth, tasks}) {
 
                                         <td className="px-3 py-2">{task.date}</td>
                                         <td className="px-3 py-2">{task.owner_id.name}</td>
+                                        <td className="px-3 py-2">{task.taskowner ? (task.taskowner.name) : ("")}</td>
                                         <td className="px-3 py-2">{task.type}</td>
                                         <td className="px-3 py-2">{task.case_type}</td>
                                         <td className="px-3 py-2">{task.region}</td>
